@@ -17,7 +17,7 @@
 				type: 'POST',
 				url: wp_post_likes.ajaxurl,
 				data : {
-					action : 'wp_post_like_process',
+					action : 'wp_post_likes_process',
 					post_id : post_id,
 					nonce : security,
 					is_comment : iscomment,

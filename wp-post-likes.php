@@ -30,9 +30,9 @@ function wp_post_likes_enqueue_scripts() {
  * Processes like/unlike
  * @since    1.0
  */
-add_action( 'wp_ajax_nopriv_wp_post_like_process', 'wp_post_like_process' );
-add_action( 'wp_ajax_wp_post_like_process', 'wp_post_like_process' );
-function wp_post_like_process() {
+add_action( 'wp_ajax_nopriv_wp_post_likes_process', 'wp_post_likes_process' );
+add_action( 'wp_ajax_wp_post_likes_process', 'wp_post_likes_process' );
+function wp_post_likes_process() {
 	// Security
 	$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( $_REQUEST['nonce'] ) : 0;
 	if ( !wp_verify_nonce( $nonce, 'wp-post-likes-nonce' ) ) {
@@ -187,7 +187,7 @@ function wp_post_likes_already_liked( $post_id, $is_comment ) {
  * Output the like button
  * @since    1.0
  */
-function wp_post_likes_button( $post_id, $is_comment = NULL ) {
+function wp_post_likes( $post_id = get_the_ID(), $is_comment = NULL ) {
 	$is_comment = ( NULL == $is_comment ) ? 0 : 1;
 	$output = '';
 	$nonce = wp_create_nonce( 'wp-post-likes-nonce' ); // Security
@@ -217,9 +217,9 @@ function wp_post_likes_button( $post_id, $is_comment = NULL ) {
 		$title = __( 'Like', 'wp-post-likes' );
 		$icon = $icon_empty;
 	}
-	$output = '<span class="wp-post-likes-wrapper"><a href="' . admin_url( 'admin-ajax.php?action=wp_post_like_process' . '&post_id=' . $post_id . '&nonce=' . $nonce . '&is_comment=' . $is_comment . '&disabled=true' ) . '" class="wp-post-likes-button' . $post_id_class . $class . $comment_class . '" data-nonce="' . $nonce . '" data-post-id="' . $post_id . '" data-iscomment="' . $is_comment . '" title="' . $title . '">' . $icon . $count . '</a>' . $loader . '</span>';
+	$output = '<span class="wp-post-likes-wrapper"><a href="' . admin_url( 'admin-ajax.php?action=wp_post_likes_process' . '&post_id=' . $post_id . '&nonce=' . $nonce . '&is_comment=' . $is_comment . '&disabled=true' ) . '" class="wp-post-likes-button' . $post_id_class . $class . $comment_class . '" data-nonce="' . $nonce . '" data-post-id="' . $post_id . '" data-iscomment="' . $is_comment . '" title="' . $title . '">' . $icon . $count . '</a>' . $loader . '</span>';
 	return $output;
-} // wp_post_likes_button()
+} // wp_post_likes()
 
 /**
  * Processes shortcode to manually add the button to posts
@@ -227,7 +227,7 @@ function wp_post_likes_button( $post_id, $is_comment = NULL ) {
  */
 add_shortcode( 'wp-post-likes', 'wp_post_likes_shortcode' );
 function wp_post_likes_shortcode() {
-	return wp_post_likes_button( get_the_ID(), 0 );
+	return wp_post_likes( get_the_ID(), 0 );
 } // shortcode()
 
 /**
